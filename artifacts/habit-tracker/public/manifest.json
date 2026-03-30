@@ -1,0 +1,37 @@
+{
+  "name": "HabitFlow - Controlador de Hábitos",
+  "short_name": "HabitFlow",
+  "description": "Acompanhe e construa hábitos saudáveis com insights inteligentes",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "categories": ["health", "lifestyle", "productivity"],
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver Hoje",
+      "url": "/",
+      "description": "Ver hábitos de hoje"
+    },
+    {
+      "name": "Estatísticas",
+      "url": "/stats",
+      "description": "Ver estatísticas e insights"
+    }
+  ]
+}

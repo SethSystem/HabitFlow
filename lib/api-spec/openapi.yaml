@@ -1,22 +1,24 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: HabitFlow API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: habits
+    description: Habit management
+  - name: completions
+    description: Habit completion tracking
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +26,162 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /habits:
+    get:
+      operationId: listHabits
+      tags: [habits]
+      summary: List all habits
+      responses:
+        "200":
+          description: List of habits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Habit"
+    post:
+      operationId: createHabit
+      tags: [habits]
+      summary: Create a new habit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateHabitRequest"
+      responses:
+        "201":
+          description: Habit created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Habit"
+
+  /habits/{id}:
+    put:
+      operationId: updateHabit
+      tags: [habits]
+      summary: Update a habit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateHabitRequest"
+      responses:
+        "200":
+          description: Habit updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Habit"
+    delete:
+      operationId: deleteHabit
+      tags: [habits]
+      summary: Delete a habit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Habit deleted
+
+  /habits/{id}/complete:
+    post:
+      operationId: completeHabit
+      tags: [completions]
+      summary: Mark a habit as complete for a specific date
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompleteHabitRequest"
+      responses:
+        "200":
+          description: Completion recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HabitCompletion"
+
+  /habits/{id}/uncomplete:
+    post:
+      operationId: uncompleteHabit
+      tags: [completions]
+      summary: Remove a habit completion for a specific date
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompleteHabitRequest"
+      responses:
+        "204":
+          description: Completion removed
+
+  /completions:
+    get:
+      operationId: listCompletions
+      tags: [completions]
+      summary: List completions for a date range
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of completions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HabitCompletion"
+
+  /stats:
+    get:
+      operationId: getStats
+      tags: [habits]
+      summary: Get habit statistics and AI insights
+      responses:
+        "200":
+          description: Stats and insights
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +192,189 @@ components:
       required:
         - status
 
+    Habit:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        icon:
+          type: string
+        color:
+          type: string
+        frequency:
+          type: string
+          enum: [daily, weekdays, weekends, custom]
+        customDays:
+          type: array
+          nullable: true
+          items:
+            type: integer
+        targetCount:
+          type: integer
+        streak:
+          type: integer
+        longestStreak:
+          type: integer
+        totalCompletions:
+          type: integer
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - icon
+        - color
+        - frequency
+        - targetCount
+        - streak
+        - longestStreak
+        - totalCompletions
+        - createdAt
+
+    CreateHabitRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        icon:
+          type: string
+        color:
+          type: string
+        frequency:
+          type: string
+          enum: [daily, weekdays, weekends, custom]
+        customDays:
+          type: array
+          nullable: true
+          items:
+            type: integer
+        targetCount:
+          type: integer
+      required:
+        - name
+        - icon
+        - color
+        - frequency
+        - targetCount
+
+    UpdateHabitRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        icon:
+          type: string
+        color:
+          type: string
+        frequency:
+          type: string
+          enum: [daily, weekdays, weekends, custom]
+        customDays:
+          type: array
+          nullable: true
+          items:
+            type: integer
+        targetCount:
+          type: integer
+
+    HabitCompletion:
+      type: object
+      properties:
+        id:
+          type: integer
+        habitId:
+          type: integer
+        completedDate:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - habitId
+        - completedDate
+        - createdAt
+
+    CompleteHabitRequest:
+      type: object
+      properties:
+        date:
+          type: string
+      required:
+        - date
+
+    HabitStat:
+      type: object
+      properties:
+        habitId:
+          type: integer
+        name:
+          type: string
+        icon:
+          type: string
+        color:
+          type: string
+        streak:
+          type: integer
+        longestStreak:
+          type: integer
+        totalCompletions:
+          type: integer
+        completionRate:
+          type: number
+        weeklyData:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              completed:
+                type: boolean
+            required:
+              - date
+              - completed
+      required:
+        - habitId
+        - name
+        - icon
+        - color
+        - streak
+        - longestStreak
+        - totalCompletions
+        - completionRate
+        - weeklyData
+
+    StatsResponse:
+      type: object
+      properties:
+        totalHabits:
+          type: integer
+        completedToday:
+          type: integer
+        longestStreakEver:
+          type: integer
+        insights:
+          type: array
+          items:
+            type: string
+        habitStats:
+          type: array
+          items:
+            $ref: "#/components/schemas/HabitStat"
+      required:
+        - totalHabits
+        - completedToday
+        - longestStreakEver
+        - insights
+        - habitStats

@@ -1,0 +1,17 @@
+packages:
+  "framer-motion": "For beautiful bouncy micro-interactions and page transitions"
+  "recharts": "For rendering stats and progress charts on the statistics page"
+  "date-fns": "For reliable date manipulation, formatting, and heatmap generation"
+  "clsx": "For conditional tailwind classes"
+  "tailwind-merge": "For merging tailwind classes safely"
+  "lucide-react": "For beautiful consistent iconography"
+
+images:
+  - path: "artifacts/habit-tracker/public/images/empty-state.png"
+    description: "A beautiful, minimalist 3D illustration of a small sprout growing in a pot, soft pastel colors, clean white background, motivating and positive feel"
+    aspect_ratio: "1:1"
+
+notes:
+  - Assuming standard Replit API client location at @workspace/api-client-react
+  - Implementing offline-first PWA with a basic service worker and manifest
+  - Using wouter for routing and framer-motion for transitions
