@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
+import { useOnlineStatus } from "@/hooks/use-online-status";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -64,9 +65,22 @@ const LogoMark = () => (
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [location] = useLocation();
+  const isOnline = useOnlineStatus();
 
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row max-w-7xl mx-auto">
+
+      {/* Offline banner */}
+      {!isOnline && (
+        <div className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-center gap-2 bg-amber-500/95 text-amber-950 text-xs font-semibold py-1.5 px-4 backdrop-blur-sm">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M1 6c3.33-4 9.33-4 13 0" /><path d="M5 10c1.67-2 5-2 7 0" />
+            <line x1="1" y1="1" x2="23" y2="23" />
+            <path d="M12 20h.01" />
+          </svg>
+          Modo offline · Mudanças salvas localmente
+        </div>
+      )}
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-60 border-r border-border/60 px-3 py-7 sticky top-0 h-screen">

@@ -65,10 +65,11 @@ export default function Dashboard() {
   const handleOpenEdit = (habit: Habit) => { setEditingHabit(habit); setIsDialogOpen(true); };
   const handleOpenCreate = () => { setEditingHabit(null); setIsDialogOpen(true); };
   const handleSubmit = (data: any) => {
+    setIsDialogOpen(false);
     if (editingHabit) {
-      updateHabit({ id: editingHabit.id, data }, { onSuccess: () => setIsDialogOpen(false) });
+      updateHabit({ id: editingHabit.id, data });
     } else {
-      createHabit({ data }, { onSuccess: () => setIsDialogOpen(false) });
+      createHabit(data);
     }
   };
 
