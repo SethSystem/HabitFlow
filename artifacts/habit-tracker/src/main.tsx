@@ -2,7 +2,10 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-if ('serviceWorker' in navigator) {
+// Detecta navegador interno do Facebook
+const isFacebook = /FBAN|FBAV/i.test(navigator.userAgent);
+
+if (!isFacebook && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then(
       (registration) => {
