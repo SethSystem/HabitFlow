@@ -1,4 +1,1 @@
-{
-  "buildCommand": "vite build",
-  "outputDirectory": "artifacts/habit-tracker/dist/public"
-}
+{}
